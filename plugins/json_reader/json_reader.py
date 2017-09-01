@@ -46,7 +46,6 @@ class JSONReader(BaseReader):
                 name = self.METADATA_PROCESSOR_KEYS.get(key, key)
                 meta = self.process_metadata(name, getattr(data, key))
                 metadata[name] = meta
-        print(metadata)
         return content, metadata
 
 

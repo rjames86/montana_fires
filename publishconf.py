@@ -9,6 +9,7 @@ import os
 import sys
 sys.path.append(os.curdir)
 from pelicanconf import *
+SITEURL = 'https://rjames86.github.io/montana_fires'
 
 SITEURL = ''
 RELATIVE_URLS = False
