@@ -1,0 +1,14 @@
+*~
+*.pyc
+*.DS_STORE
+
+# Ignore everything
+#*
+
+# But not these files...
+#!.gitignore
+#!output
+# etc...
+
+# ...even if they are in subdirectories
+#!*/
