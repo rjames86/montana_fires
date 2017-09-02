@@ -16,7 +16,7 @@ PATH = 'content'
 
 OUTPUT_PATH = os.path.join('/', 'tmp', 'montana_fires')
 
-TIMEZONE = 'America/Los_Angeles'
+TIMEZONE = 'America/Denver'
 DEFAULT_DATE_FORMAT = '%B %d, %Y at %H:%M:%S %Z'
 THEME = 'theme/nice-blog'
 

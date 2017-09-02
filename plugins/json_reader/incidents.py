@@ -56,6 +56,10 @@ class FireEntry(object):
     def incident_id(self):
         return self.LINK_REGEX.search(self.id).group('id')
 
+    @property
+    def cleaned_title(self):
+        return self.title.replace('(Wildfire)', '')
+
 
 class FireEntries(list):
     @classmethod

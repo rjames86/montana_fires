@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, unicode_literals
 
-from pelican.readers import BaseReader
+from pelican.readers import BaseReader, METADATA_PROCESSORS
 from pelican import signals
 from pelican.utils import pelican_open
-from incidents import OUTPUT_FILENAME, FireEntries
-from articles import FireArticle
+from incidents import OUTPUT_FILENAME, FireEntries, main as incident_main
+from articles import FireArticle, main as article_main
 
 import json
+import re
 
 
 class JSONReader(BaseReader):
@@ -38,8 +39,10 @@ class JSONReader(BaseReader):
             data = FireArticle(**json.loads(read_text))
         content = data.summary
 
+        METADATA_PROCESSORS['title'] = lambda x, y: re.sub(r'(.*)\s\(.* Wildfire\)', '\g<1>', x)
+
         metadata = {}
-        metadata['category'] = self.process_metadata('category', self.incidents.by_id()[data.incident_id].title)
+        metadata['category'] = self.process_metadata('category', self.incidents.by_id()[data.incident_id].cleaned_title)
         metadata['slug'] = self.process_metadata('slug', data.fire_article_id)
         for key in self.KEYS:
             if hasattr(data, key):
@@ -49,7 +52,13 @@ class JSONReader(BaseReader):
         return content, metadata
 
 
+def download_updates():
+    incident_main()
+    article_main()
+
+
 def add_reader(readers):
+    download_updates()
     for ext in JSONReader.file_extensions:
         readers.reader_classes[ext] = JSONReader
 
