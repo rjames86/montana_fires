@@ -1,0 +1,636 @@
+﻿<!DOCTYPE html>
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="en">
+<!--<![endif]-->
+	<head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="author" content="Ryan M">
+
+
+        <title>Montana Fires- Meyers Fire </title>
+
+            <link href="https://rjames86.github.io/montana_fires/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Montana Fires Full Atom Feed" />
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="https://rjames86.github.io/montana_fires/theme/css/style.css">
+
+        <!-- Custom CSS -->
+        	<link rel="stylesheet" href="https://rjames86.github.io/montana_fires/theme/css/colors/blue.css" id="colors">
+
+        <!-- Code highlight color scheme -->
+            <link href="https://rjames86.github.io/montana_fires/theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="Montana Fires">
+	</head>
+	<body>
+		<header id="header">
+			<!-- Container -->
+			<div class="container">
+				<!-- Logo / Mobile Menu -->
+				<div class="three columns">
+					<div id="logo">
+						<h1><a href="https://rjames86.github.io/montana_fires/">Montana Fires</a></h1>
+					</div>
+				</div>
+				<!-- Navigation
+				================================================== -->
+				<div class="thirteen columns">
+
+					<nav id="navigation" class="menu">
+						<ul id="responsive">
+
+							<li><a href="https://rjames86.github.io/montana_fires/pages.html">All Fires</a></li>
+                            <li><a href="https://rjames86.github.io/montana_fires/">Home</a></li>
+
+
+						</ul>
+					</nav>
+				</div>
+			</div>
+			<!-- Container / End -->
+		</header>
+		<!-- Header / End -->
+
+		<div id="content-wrapper">
+			<section id="titlebar">
+				<!-- Container -->
+				<div class="container">
+					<div class="sixteen columns">
+						<nav id="breadcrumbs">
+							<ul>
+								<li>You are here:</li>
+								<li><a href="https://rjames86.github.io/montana_fires/">Home</a></li>
+							</ul>
+						</nav>
+					</div>
+
+				</div>
+				<!-- Container / End -->
+			</section>
+
+			<div class="container">
+	<div class="sixteen columns">
+	<h3 class="headline">
+		Meyers Fire 	</h3>
+	<span class="line" style="margin-bottom:35px;"></span>
+	<div class="clearfix"></div>
+	<div id="content">
+<h3 id="home_art_head">CLOSURE</h3><div id="home_art_text"><p style="padding: 4px;"><strong>Meyers Fire Closure Area September 2, 2017</strong><br/>The area closure on the Beaverhead-Deerlodge National Forest around the Meyers Fire has been expanded to include areas in the Anaconda-Pintler Wilderness. This includes the Continental Divide Trail... <a class="more" href="/incident/article/5397/39791/">more</a></p></div><div id="modified">INCIDENT UPDATED 2 HRS. AGO</div><h3>Approximate Location</h3><div>
+<!--  Commented out GoogleMaps API to change to ESRI Map Service
+			<script type="text/javascript"    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDV7JiYnvlKzhGavFcXV7qhU28o4S8PC1k&sensor=false">    </script>
+	-->
+<script type="text/javascript">
+	
+	var toggleState = 1;
+	var gmap3;
+	var xml;
+	var mTypeid ;
+	var iname = "Meyers Fire";
+	var defLat =  45.995277777778;
+	var defLng =  -113.57972222222;
+	var defLon =  -113.57972222222;
+	var defZom =  13;
+	
+	var detailLat =  45.995277777778;
+	var detailLng =  -113.57972222222;
+	var ts = new Date().getTime(); //required when cache option is true
+	var cacheoption = "";
+	//072715 change to use single fire perimeter when ActivePerimeterOverlay fails to render
+	var perimetersOverlay = "https://rmgsc.cr.usgs.gov/outgoing/GeoMAC/GeoMAC-FSPortal.kml";
+	var unitPerimetersOverlay = ' ';
+	var isSinglePerimeter = 0;
+	//$complexPerimeter
+	var isComplexPerimeter = 0;
+	//$unitPerimeters
+	var isUnitPerimeters = 0;
+	var isActivePerimeters = false;
+	var perimeterOverlay = "https://rmgsc.cr.usgs.gov/outgoing/GeoMAC/";
+		//PCR 06/12/12
+		//Defect 5937: force no caching of ActiveFirePerimeters.kml by Goolge map rendering engine
+		//add ?nocache=<timestamp> to the URL
+	var pOverlayURL = perimetersOverlay+cacheoption;
+	var pSinglePerimeterOverlayURL = perimeterOverlay+cacheoption;
+	
+	var mapdiv = "box_google_map";
+	var markerIndex = 0;
+	var markers=[];
+	var infowindows=[];
+	var kmlActiveLayer;
+	var kmlSelectLayer;
+	var singleKmlLayer;
+	var kmlUnitLayers=[];
+	var kmlComplexLayers=[];
+	var unitLayerIndex = 0;
+	var complexLayerIndex = 0;
+	var numOverlays = 0;
+	
+
+   
+   
+
+    function loadmap() {
+     //not supported in v3 if (GBrowserIsCompatible()) { 
+     // }
+	  
+	  	var mapOptions = {
+	  // Commented out the below to switch to the ESRI Service
+          // center: new google.maps.LatLng(defLat, defLng),
+
+          zoom: defZom,
+          panControl: true,
+		  zoomControl: true,
+		  mapTypeControl: true,
+		  scaleControl: true,
+		  streetViewControl: true,
+		  overviewMapControl: true
+        };
+        gmap3 = new google.maps.Map(document.getElementById(mapdiv),  mapOptions);
+    
+        gmap3.setCenter(new google.maps.LatLng(defLat, defLng));
+        gmap3.setZoom(defZom);
+				
+		
+		loadKml();
+		
+		
+		// Add the current incident point if it is set
+		if (detailLat != 0) {
+			var detail = [];
+			detail["disable_click"] = true;
+			detail["contained"] =     0;		
+			detail["name"] =  iname  ;
+			detail["summary"] = ""  ;
+			detail["url"] = "" ;
+			detail["lat"] = parseFloat(detailLat) ;
+			detail["lng"] =  parseFloat(detailLng) ;
+		
+			
+     		detail["point"]= new google.maps.LatLng(parseFloat(detailLat), parseFloat(detailLng));
+           
+     		
+		    createMarker(detail);	
+			
+		}	
+		mTypeid = gmap3.getMapTypeId();
+		//todo
+		loadJson();
+		
+		
+
+    
+    }
+	
+	function loadJson() {		
+		// JSON Parser	
+		var feedSource = "/feeds/json/markers/";
+	
+		 $.ajax({
+			    url: feedSource,
+			    success: function(data){
+			     try{
+				     //console.log("feed "+data);
+				     //var jsonData = eval("(" + data + ")");
+				     var jsonData = JSON.parse(data);
+			
+						for (var i = 0; i < jsonData.markers.length; i++) {			
+							var output = [];			
+							output["name"] =      jsonData.markers[i].name;
+							output["summary"] =   jsonData.markers[i].summary;
+							output["url"] =       jsonData.markers[i].url;
+							output["lat"] =       Math.round(jsonData.markers[i].lat*100)/100;
+							output["lng"] =       Math.round(jsonData.markers[i].lng*100)/100;
+							output["contained"] = jsonData.markers[i].contained;
+							//todo new google.maps.LatLng(defLat, defLng)
+							//output["point"] =     new GLatLng(parseFloat(jsonData.markers[i].lat), parseFloat(jsonData.markers[i].lng));
+							 output["point"] = new google.maps.LatLng(parseFloat(jsonData.markers[i].lat), parseFloat(jsonData.markers[i].lng));
+							 
+							// skip over incident details point for current incident
+							if (output["lat"] != detailLat || output["lng"] != detailLng) {		
+								
+								var marker = createMarker(output);
+									
+							
+							}	
+							//if necessary createList of makers and windows if 
+
+						}
+					} catch (anErr){
+						console.log("marker feed error "+anErr);
+					}
+			   }
+ 			 });
+		
+		
+		
+	}
+
+		
+	function loadKml() {
+			//var kmlOptions = new google.maps.KmlLayerOptions();
+		var kmlOptions = {clickable:true,
+						map: gmap3,
+						preserveViewport: true,
+						screenOverlays: true,
+						suppressInfoWindows: false,
+						url : pOverlayURL
+						};
+		kmlActiveLayer = new google.maps.KmlLayer(kmlOptions);
+		
+		//In case you want to handle a KML mouse click event
+		//google.maps.event.addListener(kmlActiveLayer, "click", function(kmlMouseEvent) {
+			//google.maps.KmlMouseEvent
+ 			 //alert("You clicked a kml feature. "+kmlMouseEvent.featureData); 			
+ 		
+		//});
+		google.maps.event.addListener(kmlActiveLayer, "status_changed", function(kmlstatus) {
+			
+ 			console.log("Active Perimeter KML STATUS "+kmlActiveLayer.getStatus()); 
+ 			//
+ 			if (kmlActiveLayer.getStatus() == "OK"){
+ 				isActivePerimeters = true;
+ 			}
+ 			if (kmlActiveLayer.getStatus() != "OK" && isSinglePerimeter){
+ 				kmlActiveLayer.setMap(null);
+ 				loadSinglePermiterKml(); 				
+ 			}	
+ 			if (kmlActiveLayer.getStatus() != "OK" && isComplexPerimeter && isUnitPerimeters){
+ 				kmlActiveLayer.setMap(null);
+ 				loadComplexPermiterKmls(); 				
+ 			}
+ 			if (kmlActiveLayer.getStatus() != "OK" && !isComplexPerimeter && !isSinglePerimeter && isUnitPerimeters){
+ 				kmlActiveLayer.setMap(null);
+ 				loadUnitPermiterKmls(); 				
+ 			}		
+ 		 
+		});
+		
+	}
+	//call this when the ActiveFirePerimeters Overlay fails to render
+	//this will render the single fire perimeter if one exists.
+	function loadSinglePermiterKml(){
+			var kmlOptions = {clickable:true,
+						map: gmap3,
+						preserveViewport: true,
+						screenOverlays: true,
+						suppressInfoWindows: false,
+						url : pSinglePerimeterOverlayURL
+						};
+			singleKmlLayer = new google.maps.KmlLayer(kmlOptions);
+			numOverlays++;
+			google.maps.event.addListener(singleKmlLayer, "status_changed", function(kmlstatus) {
+			
+		 			console.log("Single KML STATUS "+this.status+" complex="+isComplexPerimeter); 
+		 				
+		 		
+				});	
+			
+	}
+	
+	//this will render all the perimeters for the unit and its neighbors
+	function loadUnitPermiterKmls(){
+			//var inameonly = iname.replace("Complex","");
+			var numPerims = unitPerimetersOverlay.length;
+			var numUnitLayers =0;
+			console.log("Unit KMLs load: ="+numPerims);
+			//if (numPerims > 30){
+			//	numPerims = 30;
+			//}
+			var x = document.createElement("SELECT");	
+			x.id = "unitperimetersid";
+			x.addEventListener("change", addUnitLayerEvent);		
+			var pdiv = document.getElementById("perimetersdiv");
+			//perimetersdescdiv
+			var pdes = document.getElementById("perimetersdescdiv");
+			pdes.innerHTML = "<br><b>View nearby fire perimeters</b>";
+			pdiv.appendChild(x);
+			var zoom=gmap3.getZoom();
+			console.log("Unit KML :"+zoom);
+			gmap3.setZoom(zoom-6);
+			for (i = 0; i < numPerims; i++) { 
+				  var kmlname = decodeURIComponent(unitPerimetersOverlay[i]);
+				  console.log("Unit KML name to load: ="+kmlname); 
+				  var option = document.createElement("option");
+				  option.text = kmlname.replace("https://rmgsc.cr.usgs.gov/outgoing/GeoMAC/","");
+				  option.value = unitPerimetersOverlay[i];
+				  x.add(option);
+			      if (numOverlays < 10){
+			     	var kmlOptions = {clickable:true,
+						map: gmap3,
+						preserveViewport: true,
+						screenOverlays: true,
+						suppressInfoWindows: false,
+						url :  unitPerimetersOverlay[i]
+						};
+					var kmlUnitLayer = new google.maps.KmlLayer(kmlOptions);
+					kmlUnitLayers.push(kmlUnitLayer);
+					numUnitLayers++;
+					numOverlays++;
+					google.maps.event.addListener(kmlUnitLayer, "status_changed", function(kmlstatus) {
+			
+		 				console.log("Unit KML STATUS "+this.status); 
+		 				
+		 		
+					});	
+					
+				}
+			}
+		
+		
+	}
+	
+	function addUnitLayerEvent(event){
+		var layer = event;
+		var kmlurl = document.getElementById("unitperimetersid").value;
+		if (kmlSelectLayer != null){
+			kmlSelectLayer.setMap(null);
+		}
+		removeKMLLayers(kmlUnitLayers);
+		var kmlOptions = {clickable:true,
+						map: gmap3,
+						preserveViewport: true,
+						screenOverlays: true,
+						suppressInfoWindows: false,
+						url :  kmlurl
+						};
+		kmlSelectLayer = new google.maps.KmlLayer(kmlOptions);
+					
+		google.maps.event.addListener(kmlSelectLayer, "status_changed", function(kmlstatus) {		
+		 	console.log("Add KML layer STATUS "+this.status);	 		
+		});	
+	}
+	
+	function loadComplexPermiterKmls(){
+			var inameonly = iname.replace("Complex","");
+			var numPerims = unitPerimetersOverlay.length;
+			var numComplexLayers= 0;
+			var selectAdded = false;
+			console.log("Complex KMLs load: complex="+isComplexPerimeter+" "+numPerims+" "+inameonly);
+			//if (numPerims > 30){
+			//	numPerims = 30;
+			//}
+			var zoom=gmap3.getZoom();
+			console.log("Unit KML :"+zoom);
+			gmap3.setZoom(zoom-3);
+			
+			for (i = 0; i < numPerims; i++) { 
+				  var kmlname = decodeURIComponent(unitPerimetersOverlay[i]);
+				  if (isComplexPerimeter && (kmlname.search(inameonly) > 0)){
+				  	if (!selectAdded){
+				  		selectAdded = true;
+				  		var x = document.createElement("SELECT");	
+						x.id = "complexperimetersid";
+						x.addEventListener("change", addComplexLayerEvent);		
+						var pdiv = document.getElementById("perimetersdiv");
+						var pdes = document.getElementById("perimetersdescdiv");
+						pdes.innerHTML = "<br><b>View related fire perimeters</b>";
+						pdiv.appendChild(x);
+						//remove single permiter
+						singleKmlLayer.setMap(null);
+				  		
+				  	}
+				  	var option = document.createElement("option");
+				  	option.text = kmlname.replace("https://rmgsc.cr.usgs.gov/outgoing/GeoMAC/","");
+				 	option.value = unitPerimetersOverlay[i];
+				  	x.add(option);
+				  
+				  console.log("Complex KML name to load: ="+kmlname+" "+kmlname.search(inameonly)); 
+			      if (numOverlays < 9){
+			     	var kmlOptions = {clickable:true,
+						map: gmap3,
+						preserveViewport: true,
+						screenOverlays: true,
+						suppressInfoWindows: false,
+						url :  unitPerimetersOverlay[i]
+						};
+					var kmlComplexLayer = new google.maps.KmlLayer(kmlOptions);
+					kmlComplexLayers.push(kmlComplexLayer);
+					console.log("Add Layer complex perimeter: "+unitPerimetersOverlay[i]);
+					numComplexLayers++;
+					numOverlays++;
+					google.maps.event.addListener(kmlComplexLayer, "status_changed", function(kmlstatus) {
+			
+		 				console.log("Complex KML STATUS "+this.status); 
+		 				
+		 		
+					});	
+					
+				  }
+				}
+			}
+		
+		
+	}
+	function addComplexLayerEvent(event){
+		var layer = event;
+		var kmlurl = document.getElementById("complexperimetersid").value;
+		if (kmlSelectLayer != null){
+			kmlSelectLayer.setMap(null);
+		}
+		removeKMLLayers(kmlComplexLayers);
+		var kmlOptions = {clickable:true,
+						map: gmap3,
+						preserveViewport: true,
+						screenOverlays: true,
+						suppressInfoWindows: false,
+						url :  kmlurl
+						};
+		kmlSelectLayer = new google.maps.KmlLayer(kmlOptions);
+					
+		google.maps.event.addListener(kmlSelectLayer, "status_changed", function(kmlstatus) {		
+		 	console.log("Add KML layer STATUS "+this.status);	 		
+		});	
+	}
+
+	function removeKMLLayers(layers){
+		for (i = 0; i < layers.length; i++) { 
+    		layers[i].setMap(null);
+		}
+	}
+	function makeIcon (input) {
+		
+		var iconFlame = { 
+		url: "/images/maps/flame.png",
+		size: new google.maps.Size(20, 34),
+		scaledSize: new google.maps.Size(12, 20),
+		anchor: new google.maps.Point(6, 20)
+		};
+		
+	
+		
+		/**/
+		var  iconSmoke = { 
+		url: "/images/maps/smoke.png",
+		size: new google.maps.Size(20, 34),
+		scaledSize: new google.maps.Size(12, 20),
+		anchor: new google.maps.Point(6, 20)
+		};
+		
+		
+	
+		var customIcons = [];
+		customIcons["0"] = iconFlame;
+		customIcons["1"] = iconSmoke;
+		
+		
+		var icon = customIcons[input["contained"]];
+		
+		return icon;
+	}
+	
+	function createMarker(input) {		
+	
+		var icon = makeIcon(input);
+		/**/
+		var iconShadow = {
+		url: "http://labs.google.com/ridefinder/images/mm_20_shadow.png",
+		size : new google.maps.Size(12, 10),
+		anchor : new google.maps.Point(6, 20)
+		};
+		var marker = new google.maps.Marker({
+            position: input.point,
+            icon :icon,
+            shadow : iconShadow,
+            flat: false,
+            title: input["name"],
+            map: gmap3
+      		});
+		
+ 
+		var infwOptions = {
+ 			 	content: formatTabOne(input),
+ 			 	position: input["point"]
+				};
+ 		var infw = new google.maps.InfoWindow(infwOptions);
+ 		
+ 		markers[markerIndex]=marker;
+ 		infowindows[markerIndex] = infw; 		
+ 		markerIndex++;
+		
+		google.maps.event.addListener(marker, "click", function() {
+ 			 //alert("You clicked the map. "+infw.position);
+ 			 infw.open(gmap3,marker);
+ 		
+		});
+		
+
+		
+		return marker;
+	}
+			
+	function formatTabOne (input) {				
+		var html 	 = "<div class=\"bubble\">";
+		html 		+= "<p><strong><a href=\"" + input["url"] + "\">" + input["name"] + "</a></strong><br />";
+		html 		+= "Lat: " + input["lat"] + "<br />";	
+		html 		+= "Long: " + input["lng"] + "</p>";			
+		html 		+= "<p>" + input["summary"] + "</p>";
+		html		+= "</div>";					
+		return html;			
+	}
+		
+	function formatTabTwo (input) {
+		var html 	 = "<div class=\"bubble\">";
+		html 		+= "<p>" + input["summary"] + "</p>";
+		html		+= "<p>"
+		if(input["acres"] != null) {
+			html 	+= "<strong>Acres:</strong> " + input["acres"] + "<br />";
+		}		
+		if(input["resources"] != null) {
+			html 	+= "<strong>Resources:</strong> " + input["resources"] + "<br />";
+		}
+		html 		+= "</p></div>";					
+		return html;			
+	}
+	
+	function resetMap() {
+      if (toggleState == 1) {
+        gmap3.setCenter(new google.maps.LatLng(defLat, defLng));
+        gmap3.setZoom(defZom);
+        gmap3.setMapTypeId(mTypeid);
+        var index;
+		
+		for (index = 0; index < infowindows.length; ++index) {
+		    //console.log(infowindows[index]);
+		    var infow = infowindows[index];
+		   
+		    if (infow != null && typeof infow !== "undefined"){ 
+		    	infow.close();
+		    }
+		}
+		var nullMap = null;
+		//clear the KML layer
+		if (isActivePerimeters){
+			kmlLayer.setMap(nullMap);
+			//reset the KML layer
+			kmlLayer.setMap(gmap3);
+		}
+        toggleState = 0;
+      } else {
+        toggleState = 1;
+      }
+    }
+	
+  
+  
+  </script>
+  
+  45.995 latitude, -113.58 longitude <input class="button" onclick="resetMap();" type="button" value="zoom to incident"/><div id="perimetersdescdiv" style="display: inline;"></div><div id="perimetersdiv"></div><div class="tundra" id="box_google_map"></div></div><h3>Incident Overview</h3><div><p><a href="https://www.facebook.com/1540138089548920/videos/2018631701699554/" target="_self"><font size="3">Operations Briefing Video for September 2nd, 2017</font></a><font size="2"><font color="#000000"><b style="mso-bidi-font-weight: normal;"><br/> <br/>Current Size: </b> 30,486 acres<br/><b style="mso-bidi-font-weight: normal;">Resources Assigned</b>: 322 </font></font></p><p><font color="#000000" face="Times New Roman" size="3"> </font></p><p align="center" style="margin: 4pt 0in; text-align: center;"><br/><font size="3">Inciweb is currently having trouble with uploading the map. Please click </font><a href="https://www.facebook.com/1540138089548920/photos/pcb.2018144715081586/2018143965081661/?type=3&amp;theater" target="_blank"><font size="3">here</font></a><font size="3"> to see the map on Facebook.</font></p><p align="center" style="margin: 4pt 0in; text-align: center;"><font color="#000000"><b>Extreme fire conditions. No campfires allowed.</b></font><br/> <br/> </p><p><font color="#000000" face="Times New Roman" size="3"> </font></p><p style="margin: 4pt 0in;"><font size="2"><font color="#000000"><b style="mso-bidi-font-weight: normal;">Status:</b> The fire is burning in mixed conifer stands, primarily lodgepole pine, Douglas fir, and subalpine fir, with numerous standing dead trees. There are residences still at risk in the Moose Lake, Frog Pond, Springer Memorial Park and Bonanza areas.</font></font></p><p><font color="#000000" face="Times New Roman" size="3"> </font></p><p style="margin: 4pt 0in;"><font size="2"><font color="#000000"><b style="mso-bidi-font-weight: normal;">Yesterday’s Activities: </b>Fire activity was not as intense as on Thursday, but the periphery did continue to expand in several areas with some short-range spotting, torching and fire runs occurring. The eastern edge of the fire south of Moose Lake advanced beyond the Continental Divide Trail into Deer Lodge County, with some additional spotting ahead of the fire. The Moose Lake and East Fork Bitterroot communities remain in a pre-evacuation warning status. Along the fire’s west edge, ground crews made progress on control lines and burn outs, and continued structure protection measures in the Frog Pond and East Fork Bitterroot communities. Hand crews and heavy equipment neared completion of a control line running east from Zeke’s Meadow, which itself was partially burned out today to increase holding capabilities along the north edge.</font></font></p><p><font color="#000000" face="Times New Roman" size="3"> </font></p><p style="margin: 4pt 0in;"><font size="2"><font color="#000000"><b style="mso-bidi-font-weight: normal;">Current Resources: Three</b> 20-person crews, <b style="mso-bidi-font-weight: normal;">twenty</b> engines, <b style="mso-bidi-font-weight: normal;">four</b> pieces of heavy equipment (dozers, masticators), <b style="mso-bidi-font-weight: normal;">ten </b>water tenders, and <b style="mso-bidi-font-weight: normal;">three</b> helicopters. Total personnel: <b style="mso-bidi-font-weight: normal;">322</b>.</font></font></p><p><font color="#000000" face="Times New Roman" size="3"> </font></p><p style="margin: 4pt 0in;"><font size="2"><font color="#000000"><b style="mso-bidi-font-weight: normal;">Today’s Activities:</b> Fire weather will intensify again today and tomorrow after yesterday’s slight reprieve. Spotting of ¼ to ½ mile may occur. Fire activity will increase, especially along the southwest, south, and southeast edges of the fire. Fire staff will work on building a machine and hand line ahead of the southwest edge of the fire to protect the East Fork Bitterroot structures. Structure protection efforts will continue here, at Frog Pond, Moose Lake, and other isolated buildings. Crews will continue burn out operations to reduce unburned fuels between the fire and the Frog Pond area. Because of the potential for increased fire activity along the east side, the Moose Lake community will be a main focus of attention today.</font></font></p><p><font color="#000000" face="Times New Roman" size="3"> </font></p><p style="margin: 4pt 0in;"><font size="2"><font color="#000000"><b style="mso-bidi-font-weight: normal;">Evacuations: </b>The Frog Pond area is under an evacuation order. Moose Lake residents are under an evacuation warning. Additionally, an evacuation warning is in effect on East Fork Rd from FS Rd 5778 to Little East Fork Rd (FS RD 724) on the Bitterroot National Forest.</font></font></p><p><font color="#000000" face="Times New Roman" size="3"> </font></p><p style="margin: 4pt 0in;"><font size="2"><font color="#000000"><b style="mso-bidi-font-weight: normal;">Restrictions/Closures: </b>Bitterroot National Forest emergency closure orders are in effect for upper areas of the East Fork Bitterroot River.<b style="mso-bidi-font-weight: normal;"> </b>Beaverhead-Deerlodge National Forest<b style="mso-bidi-font-weight: normal;"> </b>emergency closure orders are in effect around the fire area.<b style="mso-bidi-font-weight: normal;"> </b>The closure of Forest Roads 893, 8684 and 8685 was rescinded at 6:00AM Friday, September 1, 2017. A temporary flight restriction (TFR) is in effect surrounding the Meyers Fire area. Granite County is under Stage 2 fire restrictions for private lands in the county. Amended Stage 1 fire restrictions have gone into effect today which prohibit <b style="mso-bidi-font-weight: normal;">ALL</b> campfires in southwestern Montana, including in fire rings and developed recreation areas. </font></font></p><p><font color="#000000" face="Times New Roman" size="3"> </font></p><p><font color="#000000" face="Times New Roman" size="3"> </font></p><p style="margin: 4pt 0in;"><font color="#000000"><font size="2"><b style="mso-bidi-font-weight: normal;">For further information</b>, </font></font><font color="#000000" size="2">follow the </font><a href="https://www.facebook.com/US-Forest-Service-Beaverhead-Deerlodge-National-Forest-1540138089548920/"><font color="#0000ff" size="2">Beaverhead-Deerlodge National Forest Facebook</font></a><font color="#000000" size="2"> and </font><a href="https://www.facebook.com/DiscoverBitterrootNF"><font color="#0000ff" size="2">Bitterroot National Forest Facebook</font></a><font color="#000000" size="2"> pages.</font></p><p><font color="#000000" face="Times New Roman" size="3"> </font></p></div><br style="clear: right;"/><h4>Basic Information</h4><table cellpadding="0" cellspacing="0" class="data" summary="This table displays basic incident information."><tr><th class="cell0" scope="row" style="width: 30%;">Current as of</th><td class="cell3"><script>var clientdate = new Date("2017-09-02T20:48:43-05:00");document.write(clientdate.toLocaleString())</script></td></tr><tr><th class="cell1" scope="row">Incident Type</th><td class="cell2">Wildfire</td></tr><tr><th class="cell1" scope="row">Cause</th><td class="cell2">Lightning</td></tr><tr><th class="cell1" scope="row">Date of Origin</th><td class="cell2">Friday July 14th, 2017 approx.   05:30 PM</td></tr><tr><th class="cell1" scope="row">Location</th><td class="cell2">25 miles SW of Philipsburg, MT</td></tr><tr><th class="cell1" scope="row">Incident Commander</th><td class="cell2">Irv Leach, ICT2</td></tr><tr><th class="cell1" scope="row">Incident Description</th><td class="cell2">Wildfire</td></tr></table><h4>Current Situation</h4><table cellpadding="0" cellspacing="0" class="data" summary="This table displays the situation information."><tr><th class="cell0" scope="row" style="width: 30%;">Total Personnel</th><td class="cell3">333</td></tr><tr><th class="cell1" scope="row">Size</th><td class="cell2">30,486 Acres</td></tr><tr><th class="cell1" scope="row">Percent of Perimeter Contained</th><td class="cell2">5%</td></tr><tr><th class="cell1" scope="row">Estimated Containment Date</th><td class="cell2">Saturday October 21st, 2017 approx.   12:00 PM</td></tr><tr><th class="cell1" scope="row">Fuels Involved</th><td class="cell2"><p>The fire is primarily burning within mixed conifer stands dominated by lodgepole pine, Douglas-fir and subalpine fir with a moderate dead/down component from beetle kill.  Bug killed standing timber comprises approximately 20-40% of the area.  ERC-G is above 97%.  100 and 1000 fuel moistures are 6% and 7%, respectively.</p></td></tr><tr><th class="cell1" scope="row">Significant Events</th><td class="cell2"><p>Moderate to mostly extreme fire behavior with sustained uphill runs, group torching, and long-range range spotting.</p></td></tr></table><h4>Outlook</h4><table cellpadding="0" cellspacing="0" class="data" summary="This table displays outlook information."><tr><th class="cell0" scope="row" style="width: 30%;">Planned Actions</th><td class="cell3"><p>Division I will continue structure prep in high priority areas within the northeast side of the two subdivisions in the East Fork Bitterroot drainage and continue strategy for containment lines utilizing heavy equipment and hand crews.  Burn operations are being conducted in Division K to keep wildfire from impacting structures. Line prep utilizing hand crews in DIV T for potential line on the 4th. Line improvement in Division T from Zeke's Meadow to Lone Pine Ridge. Continue to monitor fire progression in Divisions A, E, K, T, and W. Continue to support IA responsibilities within the designated Initial Attack Responsibility area. Continue to implement structure protection measures at Moose Lake, Frog Pond, and Senate Mine. Implement suppression strategies commensurate with values at risk. </p></td></tr><tr><th class="cell1" scope="row">Projected Incident Activity</th><td class="cell2"><p>12 Hours: Along the northern perimeter (Div R) the fire will continue to move to the north and east near Zeke Meadows. Spotting potential will be ¼ to ½ mile. </p>
+<p>Along the western perimeter (Div K) the fire will move east of the Frog Pond Burn area.  The fire will also continue backing into the wind to the west.   </p>
+<p>Along the southern perimeter (Div I) the fire will back into the wind to the west and move upslope to the northeast within Section 35 at the Div K/I break.  The fire will also move east of Cliff Point and south into the 2000 Mussigbrod Burn.  Spotting potential will be ½ to 1 mile.</p>
+<p>Along the eastern perimeter (Div E) near DP 19 (Moose Lake Road) the fire will continue moving to the east of the Moose Creek Road.  Spotting potential will be ¼ to ½ mile.  Possible for crown fire activity to moderate due to smoke from fire in Divs K and I. </p>
+<p>24 Hours: Fire activity expected to intensify due to continued warm and dry conditions and a Haines of 6 (high).</p></td></tr><tr><th class="cell1" scope="row">Remarks</th><td class="cell2"><p>The Meyers fire area continues to include 3621 final acres of the Whetstone Ridge Fire.</p>
+<p>Land Ownership: USFS - 30,470 acres; Private - 16 acres.</p>
+<p>The structure group has triaged and/or prepared 82 structures nearest to the fire.  These numbers are for both Meyers and Whetstone Ridge fires.  </p>
+<p>Cost for the Whetstone Ridge fire is currently captured under the Meyers fire.</p>
+<p>A timber task force (not shown on the Resources list) is currently working  on control lines in the East Fork Bitterroot.</p>
+<p>A long-term strategy has been developed to aid in mitigation efforts for hazards posed by numerous snags, and that includes management action points, identification of contingency lines and point protection for communities several miles from current perimeter based on the extended time needed to acquire sufficient new resources and maneuver our current resources.  </p></td></tr></table><h4>Current Weather</h4><table cellpadding="0" cellspacing="0" class="data" summary="This table displays weather information."><tr><th class="cell0" scope="row" style="width: 30%;">Weather Concerns</th><td class="cell3"><p>Observed today: </p>
+<p>Thermal belts continued to develop early Saturday morning with temperatures around 6500-7000' remaining warmer at around 60°F, with humidity recoveries limited to around 35%. Recoveries were better at lower and higher elevations on the fire where temperatures were generally in the upper 30s to mid-40s°F with recoveries to 60-70%. Near critical conditions developed during the burning period as temperatures rose to 80-88°F with humidity values dropping to 13-17%. Winds increased compared to Friday, with ridgetop winds from the west at 20-25 mph. 20-ft valley winds increased during the late afternoon to 10-14 mph with gusts as high as 30 mph. Mostly sunny skies were observed with high pressure across the fire area Saturday. </p>
+<p>Forecasted:</p>
+<p>Sunday will have a continuation of the warming trend, and conditions will become even more unstable with critical conditions expected. A Red Flag Warning will be in place for the Meyers Fire.  Morning temperatures between 6000-7000ft in the thermal belts will be in the upper 60s and lower 70s with humidity values starting the day in just around 20-25%. High temperatures will generally be in the mid 80s to near 90 with humidity values dropping as low as 10%.  Haines index values will reach 6 (High) during much of the burning period. Increased winds and gusty conditions will be similar to Saturday with sustained winds of 10-15 mph, with gusts to around 30 mph after 1500 from the WNW. Ridgetop winds will be 20-25 mph. Inversions will redevelop Sunday night, but will be broken down as a cold front moves from east to west into the early hours by around sunrise, with northeast winds expected to develop. </p>
+<p></p></td></tr></table>
+</div>
+	</div>
+			</div>
+			<!-- Container / End -->
+		</div>
+		<!-- Content Wrapper / End -->
+
+
+		<div id="footer-bottom">
+			<!-- Container -->
+			<div class="container">
+                <div class="eight columns">Blog powered by <a href="http://getpelican.com">Pelican</a></div>
+				<div class="eight columns">Last Updated 09/02/2017 21:08</div>
+			</div>
+			<!-- Container / End -->
+		</div>
+		<!-- Footer Bottom / End -->
+
+	<!-- Javascripts -->
+	<script src="https://rjames86.github.io/montana_fires/theme/js/jquery.min.js"></script>
+    <script type="text/javascript">
+        var pkBaseURL = "ryanmo.co/pa";
+    var _paq = _paq || [];
+    _paq.push(["trackPageView"]);
+    _paq.push(["enableLinkTracking"]);
+    (function() {
+        var u=(("https:" == document.location.protocol) ? "https" : "http")+"://"+pkBaseURL+"/";
+        _paq.push(["setTrackerUrl", u+"piwik.php"]);
+        _paq.push(["setSiteId", "6"]);
+        var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";
+        g.defer=true; g.async=true; g.src=u+"piwik.js"; s.parentNode.insertBefore(g,s);
+    })();
+    </script>
+	</body>
+</html>
