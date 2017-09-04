@@ -1,0 +1,19 @@
+{% extends "with-sidebar.html" %}
+
+{% block title %} - Pages{% endblock title %}
+
+{% block page_breadcrumbs %}
+<li>Pages</li>
+{% endblock page_breadcrumbs %}
+
+{% block content %}
+    <h3 class="headline">Pages</h3>
+    <span class="line" style="margin-bottom:30px;"></span>
+    <div class="clearfix"></div>
+
+    <ul>
+        {% for p in pages|sort(attribute='title') %}
+            <li{% if p == page %} class="active"{% endif %}><a href="{{ SITEURL }}/{{ p.url }}">{{ p.title }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock content %}

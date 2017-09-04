@@ -139,7 +139,7 @@ def main():
 
     for entry in current_entries:
         with open(os.path.join(OUTPUT_DIR, '%s.json' % entry.incident_id), 'w') as f:
-            json.dump(entry, f, cls=JSONEncoder)
+            json.dump(entry, f, sort_keys=True, indent=4, separators=(',', ': '), cls=JSONEncoder)
 
 
 if __name__ == '__main__':
