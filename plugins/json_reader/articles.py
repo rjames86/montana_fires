@@ -4,6 +4,7 @@ import json
 import re
 import os
 from collections import defaultdict
+from bs4 import BeautifulSoup as Soup
 
 URL = 'https://inciweb.nwcg.gov/feeds/rss/articles/state/27/'
 OUTPUT_DIR = '/Users/rjames/Dropbox/blogs/montana_fires/content'
@@ -31,7 +32,9 @@ class FireArticle(object):
                  title_detail,
                  link,
                  published,
-                 id):
+                 id,
+                 content=None,
+                 *args, **kwargs):
         self.summary_detail = summary_detail
         self.published_parsed = published_parsed
         self.links = links
@@ -42,9 +45,24 @@ class FireArticle(object):
         self.link = link
         self.published = published
         self.id = id
+        self._content = content
 
     def asjson(self):
-        return self.__dict__
+        return dict(
+            summary_detail=self.summary_detail,
+            published_parsed=self.published_parsed,
+            links=self.links,
+            title=self.title,
+            summary=self.summary,
+            guidislink=self.guidislink,
+            title_detail=self.title_detail,
+            link=self.link,
+            published=self.published,
+            id=self.id,
+            incident_id=self.incident_id,
+            article_id=self.article_id,
+            content=self.content
+        )
 
     @property
     def incident_id(self):
@@ -58,13 +76,25 @@ class FireArticle(object):
     def fire_article_id(self):
         return "{item.incident_id}_{item.article_id}".format(item=self)
 
+    @property
+    def content(self):
+        if self._content is None:
+            if self.summary.endswith('...'):
+                soup = Soup(requests.get(self.id).text, "html.parser")
+                self._content = unicode(soup.find('div', id='content'))
+            else:
+                self._content = self.summary
+        return self._content
+
 
 class FireArticles(list):
     @classmethod
     def from_rss(cls, rss_entries):
         self = cls()
         for entry in rss_entries:
-            self.append(FireArticle(**entry))
+            article = FireArticle(**entry)
+            if not os.path.exists(os.path.join(OUTPUT_DIR, '%s.json' % article.fire_article_id)):
+                self.append(article)
         return self
 
     @classmethod

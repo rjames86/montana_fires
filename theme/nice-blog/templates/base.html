@@ -91,11 +91,12 @@
 				<!-- Navigation
 				================================================== -->
 				<div class="thirteen columns">
-					
-					<nav id="navigation" class="menu">
-						<ul id="responsive">
 
-							<li><a href="{{ SITEURL }}/">Home</a></li>
+					<nav id="navigation" class="menu">
+						<ul>
+
+							<li><a href="{{ SITEURL }}/pages.html">All Fires</a></li>
+                            <li><a href="{{ SITEURL }}/">Home</a></li>
 
 							{% for title, link in MENUITEMS %}
 							    <li><a href="{{ link }}">{{ title }}</a></li>
@@ -106,8 +107,8 @@
 							        <li{% if p == page %} class="active"{% endif %}><a href="{{ SITEURL }}/{{ p.url }}">{{ p.title }}</a></li>
 							    {% endfor %}
 							{% elif DISPLAY_CATEGORIES_ON_MENU %}
-						        {% for cat, null in categories %}
-						            <li{% if cat == category %} class="active"{% endif %}><a href="{{ SITEURL }}/{{ cat.url }}">{{ cat }}</a></li>
+						        {% for cat, articles in categories %}
+						            <li{% if cat == category %} class="active"{% endif %}><a href="{{ SITEURL }}/{{ cat.url }}">{{ cat }}</a>(Updated {{articles[0].human_date}})</li>
 						        {% endfor %}
 							{% endif %}
 						</ul>
@@ -117,12 +118,12 @@
 			<!-- Container / End -->
 		</header>
 		<!-- Header / End -->
-		
+
 		<div id="content-wrapper">
 			<section id="titlebar">
 				<!-- Container -->
 				<div class="container">
-					<div class="sixteen columns">						
+					<div class="sixteen columns">
 						<nav id="breadcrumbs">
 							<ul>
 								<li>You are here:</li>
@@ -147,7 +148,8 @@
 		<div id="footer-bottom">
 			<!-- Container -->
 			<div class="container">
-				<div class="eight columns">Blog powered by <a href="http://getpelican.com">Pelican</a></div>
+                <div class="eight columns">Blog powered by <a href="http://getpelican.com">Pelican</a></div>
+				<div class="eight columns">Last Updated {{ NOW.strftime('%m/%d/%Y %H:%M') }}</div>
 				{% if SOCIAL %}
 					<div class="eight columns">
 						<ul class="social-icons-footer">
@@ -166,7 +168,7 @@
 			<!-- Container / End -->
 		</div>
 		<!-- Footer Bottom / End -->
-		
+
 	<!-- Javascripts -->
 	<script src="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/js/jquery.min.js"></script>
 	{% include 'analytics.html' %}

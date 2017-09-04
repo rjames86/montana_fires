@@ -25,7 +25,7 @@
     })();
     </script>
 {% endif %}
-{% if PIWIK_URL and PIWIK_SITE_ID %}
+{% if PIWIK_SSL_URL and PIWIK_SITE_ID %}
     <script type="text/javascript">
     {% if PIWIK_SSL_URL %}
         var pkBaseURL = "{{ PIWIK_SSL_URL }}";

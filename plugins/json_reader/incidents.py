@@ -3,8 +3,12 @@ import requests
 import json
 import re
 import os
+from pygeocoder import Geocoder
+from bs4 import BeautifulSoup as Soup
 
 CURRENT_PATH = os.path.abspath(os.path.join(__file__, os.pardir))
+
+OUTPUT_DIR = '/Users/rjames/Dropbox/blogs/montana_fires/content/pages'
 
 URL = 'https://inciweb.nwcg.gov/feeds/rss/incidents/state/27/'
 OUTPUT_FILENAME = os.path.join(CURRENT_PATH, 'incidents.json')
@@ -34,7 +38,9 @@ class FireEntry(object):
                  published=None,
                  geo_long=None,
                  id=None,
-                 where=None, *args, **kwargs):
+                 county=None,
+                 where=None,
+                 content=None, *args, **kwargs):
         self.summary_detail = summary_detail
         self.links = links
         self.published_parsed = published_parsed
@@ -48,9 +54,36 @@ class FireEntry(object):
         self.geo_long = geo_long
         self.id = id
         self.where = where
+        self._county = county
+        self._content = content
 
     def asjson(self):
-        return self.__dict__
+        return dict(
+            summary_detail=self.summary_detail,
+            links=self.links,
+            published_parsed=self.published_parsed,
+            title=self.title,
+            geo_lat=self.geo_lat,
+            summary=self.summary,
+            guidislink=self.guidislink,
+            title_detail=self.title_detail,
+            link=self.link,
+            published=self.published,
+            geo_long=self.geo_long,
+            id=self.id,
+            where=self.where,
+            county=self.county,
+            content=self.content
+        )
+
+    @property
+    def county(self):
+        if self._county is None:
+            if self.geo_lat and self.geo_long:
+                self._county = Geocoder.reverse_geocode(float(self.geo_lat), float(self.geo_long)).county
+            else:
+                self._county = None
+        return self._county
 
     @property
     def incident_id(self):
@@ -59,6 +92,13 @@ class FireEntry(object):
     @property
     def cleaned_title(self):
         return self.title.replace('(Wildfire)', '')
+
+    @property
+    def content(self):
+        if self._content is None:
+            soup = Soup(requests.get(self.id).text, "html.parser")
+            self._content = unicode(soup.find('div', id='content'))
+        return self._content
 
 
 class FireEntries(list):
@@ -96,6 +136,10 @@ def main():
     for entry in fire_entries:
         current_entries.add_by_id(entry)
     json.dump(current_entries.by_id(), open(OUTPUT_FILENAME, 'w'), cls=JSONEncoder)
+
+    for entry in current_entries:
+        with open(os.path.join(OUTPUT_DIR, '%s.json' % entry.incident_id), 'w') as f:
+            json.dump(entry, f, cls=JSONEncoder)
 
 
 if __name__ == '__main__':

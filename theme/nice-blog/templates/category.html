@@ -2,6 +2,22 @@
 
 {% block title %} - Articles in {{ category }} category{% endblock title %}
 
+
+{% block custom_tags %}
+{% set tags = [] %}
+{% for article in articles %}
+    {% for tag in article.tags if tag not in tags %}
+        {% do tags.append(tag) %}
+    {% endfor %}
+{% endfor %}
+
+<nav class="tags">
+    {%- for tag in tags %}
+        <a href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a>
+    {% endfor %}
+</nav>
+{% endblock custom_tags %}
+
 {% block page_breadcrumbs %}
 <li><a href="{{ SITEURL }}/categories">Categories</a></li>
 <li>{{ category }}</li>

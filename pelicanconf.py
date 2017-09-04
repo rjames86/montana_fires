@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*- #
 from __future__ import unicode_literals
 import os
+import datetime
 
 BASE_BLOG_PATH = os.path.abspath(os.path.join(__file__, os.pardir))
 
@@ -12,7 +13,13 @@ AUTHOR = u'Ryan M'
 SITENAME = u'Montana Fires'
 SITEURL = 'http://localhost:8000'
 
+NOW = datetime.datetime.now()
+
 PATH = 'content'
+
+JINJA_ENVIRONMENT = dict(
+    extensions=['jinja2.ext.do']
+)
 
 OUTPUT_PATH = os.path.join('/', 'tmp', 'montana_fires')
 
@@ -21,6 +28,7 @@ DEFAULT_DATE_FORMAT = '%B %d, %Y at %H:%M:%S %Z'
 THEME = 'theme/nice-blog'
 
 DEFAULT_LANG = u'en'
+DIRECT_TEMPLATES = ['index', 'tags', 'categories', 'authors', 'archives', 'pages']
 
 # Feed generation is usually not desired when developing
 FEED_ALL_ATOM = None
@@ -33,6 +41,7 @@ PLUGIN_PATHS = ['plugins']
 PLUGINS = [
     'json_reader',
 ]
+TESTING = True
 
 # Blogroll
 LINKS = ()
@@ -49,5 +58,5 @@ DEFAULT_PAGINATION = 10
 
 
 # Theme stuff
-SIDEBAR_DISPLAY = ['categories']
+SIDEBAR_DISPLAY = ['tags', 'categories']
 

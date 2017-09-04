@@ -18,6 +18,11 @@ CATEGORY_FEED_ATOM = 'feeds/%s.atom.xml'
 
 DELETE_OUTPUT_DIRECTORY = True
 
+TESTING = False
+
+PIWIK_SSL_URL = 'ryanmo.co/pa'
+PIWIK_SITE_ID = 6
+
 # Following items are often useful when publishing
 
 #DISQUS_SITENAME = ""

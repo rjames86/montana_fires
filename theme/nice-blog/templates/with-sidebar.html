@@ -28,16 +28,20 @@
 			</nav>
 		</div>
 		{% endif %}
-		
+
 		{% if 'tags' in SIDEBAR_DISPLAY %}
 		<!-- Tags -->
 		<div class="widget{% if 'about' not in SIDEBAR_DISPLAY and 'categories' not in SIDEBAR_DISPLAY %} no-mg-top{% endif %}">
 			<h3 class="headline">Tags</h3><span class="line"></span><div class="clearfix"></div>
+			{% block custom_tags %}{% endblock custom_tags %}
+			{% if not self.custom_tags() %}
 			<nav class="tags">
 				{%- for tag, articles in tags|sort %}
 				    <a href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a>
 				{% endfor %}
 			</nav>
+			{% endif %}
+
 		</div>
 		{% endif %}
 	</div>
